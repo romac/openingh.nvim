@@ -196,7 +196,7 @@ function M.open_url(url)
 end
 
 function M.print_no_remote_message()
-  print("There is no git origin in this repo!")
+  M.notify("There is no git origin in this repo!")
 end
 
 return M

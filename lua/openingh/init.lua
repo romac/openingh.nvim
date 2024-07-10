@@ -35,13 +35,13 @@ local function get_current_branch_or_commit_with_priority(priority)
 end
 
 function M.get_file_url(
-    priority,
-    --[[optional]]
-    branch,
-    --[[optional]]
-    range_start,
-    --[[optional]]
-    range_end
+  priority,
+  --[[optional]]
+  branch,
+  --[[optional]]
+  range_start,
+  --[[optional]]
+  range_end
 )
   -- make sure to update the current directory
   M.setup()

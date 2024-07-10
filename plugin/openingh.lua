@@ -24,6 +24,10 @@ vim.api.nvim_create_user_command("OpenInGHFile", function(opts)
     url = openingh.get_file_url(judge_priority(opts.bang), branch, opts.line1, opts.line2)
   end
 
+  if url == nil then
+    return
+  end
+
   if opts.reg == "" then
     openingh.open_url(url)
   else
@@ -47,6 +51,10 @@ vim.api.nvim_create_user_command("OpenInGHFileLines", function(opts)
     url = openingh.get_file_url(judge_priority(opts.bang), branch, opts.line1, opts.line2)
   end
 
+  if url == nil then
+    return
+  end
+
   if opts.reg == "" then
     openingh.open_url(url)
   else
@@ -62,6 +70,10 @@ end, {
 
 vim.api.nvim_create_user_command("OpenInGHRepo", function(opts)
   local url = openingh.get_repo_url(judge_priority(opts.bang))
+
+  if url == nil then
+    return
+  end
 
   if opts.reg == "" then
     openingh.open_url(url)
