@@ -1,5 +1,18 @@
 local M = {}
 
+function first_non_error_line(text)
+  local lines = vim.split(text, "\n")
+  for _, line in ipairs(lines) do
+    if not line:match("^Error") then
+      return line
+    end
+  end
+end
+
+function M.system(command)
+  return first_non_error_line(vim.fn.system(command))
+end
+
 -- Notify the user that something went wrong
 function M.notify(message, log_level)
   print(message)
@@ -55,7 +68,7 @@ end
 -- get the remote default branch
 function M.get_default_branch()
   -- will return origin/[branch_name]
-  local branch_with_origin = vim.fn.system("git rev-parse --abbrev-ref origin/HEAD")
+  local branch_with_origin = M.system("git rev-parse --abbrev-ref origin/HEAD")
   local branch_name = M.split(branch_with_origin, "/")[2]
 
   return M.trim(branch_name)
@@ -63,29 +76,29 @@ end
 
 -- Checks if the supplied branch is available on the remote
 function M.is_branch_upstreamed(branch)
-  local output = M.trim(vim.fn.system("git branch -r --list origin/" .. branch))
+  local output = M.trim(M.system("git branch -r --list origin/" .. branch))
   if output:find(branch, 1, true) then
     return true
   end
 
   -- ls-remote is more expensive so only use it as a fallback
-  output = M.trim(vim.fn.system("git ls-remote --exit-code --heads origin " .. branch))
+  output = M.trim(M.system("git ls-remote --exit-code --heads origin " .. branch))
   return output ~= ""
 end
 
 -- Get the current working branch
 local function get_current_branch()
-  return M.trim(vim.fn.system("git rev-parse --abbrev-ref HEAD"))
+  return M.trim(M.system("git rev-parse --abbrev-ref HEAD"))
 end
 
 -- Get the commit hash of the most recent commit
 local function get_current_commit_hash()
-  return M.trim(vim.fn.system("git rev-parse HEAD"))
+  return M.trim(M.system("git rev-parse HEAD"))
 end
 
 -- Checks if the supplied commit is available on the remote
 function M.is_commit_upstreamed(commit_sha)
-  local output = M.trim(vim.fn.system('git log --format="%H" --remotes'))
+  local output = M.trim(M.system('git log --format="%H" --remotes'))
   return output:match(commit_sha) ~= nil
 end
 
@@ -126,7 +139,7 @@ end
 function M.get_current_relative_file_path()
   -- we only want the active buffer name
   local absolute_file_path = vim.api.nvim_buf_get_name(0)
-  local git_path = vim.fn.system("git rev-parse --show-toplevel")
+  local git_path = M.system("git rev-parse --show-toplevel")
 
   if vim.fn.has("win32") == 1 then
     absolute_file_path = string.gsub(absolute_file_path, "\\", "/")

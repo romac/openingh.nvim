@@ -4,7 +4,7 @@ local M = {}
 function M.setup()
   -- get the current working directory and set the url
   local current_buffer = vim.fn.expand("%:p:h"):gsub("%[", "\\["):gsub("%]", "\\]")
-  local repo_url = vim.fn.system("git -C " .. current_buffer .. " config --get remote.origin.url")
+  local repo_url = utils.system("git -C " .. current_buffer .. " config --get remote.origin.url")
 
   if repo_url:len() == 0 then
     M.is_no_git_origin = true
@@ -35,13 +35,13 @@ local function get_current_branch_or_commit_with_priority(priority)
 end
 
 function M.get_file_url(
-  priority,
-  --[[optional]]
-  branch,
-  --[[optional]]
-  range_start,
-  --[[optional]]
-  range_end
+    priority,
+    --[[optional]]
+    branch,
+    --[[optional]]
+    range_start,
+    --[[optional]]
+    range_end
 )
   -- make sure to update the current directory
   M.setup()
